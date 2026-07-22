@@ -69,6 +69,28 @@ function Dashboard() {
     };
 
     setMessages((prev) => [...prev, newMessage]);
+
+    setConversations((prev) => {
+  const updatedConversations = prev.map((conversation) =>
+    conversation.id === selectedConversation.id
+      ? {
+          ...conversation,
+          message: text,
+          time: newMessage.time,
+        }
+      : conversation
+  );
+
+  const activeConversation = updatedConversations.find(
+    (conversation) => conversation.id === selectedConversation.id
+  );
+
+  const otherConversations = updatedConversations.filter(
+    (conversation) => conversation.id !== selectedConversation.id
+  );
+
+  return [activeConversation, ...otherConversations];
+});
   };
 
   return (
