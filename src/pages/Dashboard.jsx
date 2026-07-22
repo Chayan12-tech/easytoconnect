@@ -1,4 +1,5 @@
 import { useState } from "react";
+import initialMessages from "../data/messages";
 
 import Sidebar from "../components/Sidebar";
 import ConversationList from "../components/ConversationList";
@@ -16,6 +17,8 @@ function Dashboard() {
   const [selectedConversation, setSelectedConversation] = useState(
     initialConversations[0] ?? null
   );
+
+  const [messages, setMessages] = useState(initialMessages);
 
   // New Conversation Modal
   const [isNewConversationOpen, setIsNewConversationOpen] = useState(false);
@@ -66,6 +69,7 @@ function Dashboard() {
 
         <ChatWindow
           conversation={selectedConversation}
+          messages={messages}
         />
       </div>
 

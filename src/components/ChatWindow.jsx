@@ -1,14 +1,14 @@
 import ChatHeader from "./ChatHeader";
 import MessageBubble from "./MessageBubble";
 import MessageInput from "./MessageInput";
-import messages from "../data/messages";
 
-function ChatWindow({ conversation }) {
+function ChatWindow({ conversation, messages }) {
   return (
     <div className="flex-1 flex flex-col bg-gray-50">
       <ChatHeader conversation={conversation} />
 
       <div className="flex-1 overflow-y-auto px-5 py-5">
+        {/* Date Separator */}
         <div className="flex items-center justify-center my-6">
           <div className="flex-1 h-px bg-gray-200"></div>
 
@@ -19,6 +19,7 @@ function ChatWindow({ conversation }) {
           <div className="flex-1 h-px bg-gray-200"></div>
         </div>
 
+        {/* Messages */}
         <div className="space-y-2">
           {messages.map((message) => (
             <MessageBubble
