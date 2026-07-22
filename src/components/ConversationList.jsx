@@ -1,116 +1,231 @@
+import { useMemo, useState } from "react";
+import { Search, Plus, Star } from "lucide-react";
 import { conversations } from "../data/conversations";
-import { useState } from "react";
 
+const avatarColors = [
+  "bg-blue-600",
+  "bg-purple-600",
+  "bg-emerald-600",
+  "bg-orange-500",
+  "bg-pink-600",
+  "bg-cyan-600",
+  "bg-indigo-600",
+  "bg-red-500",
+  "bg-teal-600",
+];
 
 function ConversationList() {
-    const [activeChat, setActiveChat] = useState(1);
-  return (
-    <div className="w-80 bg-white border-r border-gray-200 flex flex-col h-full">
+  const [activeChat, setActiveChat] = useState(1);
+  const [search, setSearch] = useState("");
+  const [activeTab, setActiveTab] = useState("all");
 
+  const totalCount = conversations.length;
+
+  const unreadCount = conversations.filter((chat) => chat.unread > 0).length;
+
+  const favoriteCount = conversations.filter((chat) => chat.favorite).length;
+
+  const filteredConversations = useMemo(() => {
+    let data = [...conversations];
+
+    if (activeTab === "unread") {
+      data = data.filter((chat) => chat.unread > 0);
+    }
+
+    if (activeTab === "favorites") {
+      data = data.filter((chat) => chat.favorite);
+    }
+
+    if (search.trim()) {
+      data = data.filter(
+        (chat) =>
+          chat.name.toLowerCase().includes(search.toLowerCase()) ||
+          chat.message.toLowerCase().includes(search.toLowerCase()),
+      );
+    }
+
+    return data;
+  }, [search, activeTab]);
+
+  return (
+    <div className="w-[290px] bg-white border-r border-gray-200 flex flex-col h-full">
       {/* Header */}
-      <div className="p-5 border-b">
-        <h2 className="text-xl font-semibold text-gray-800">
-          Conversations
-        </h2>
+      <div className="px-5 pt-5 pb-3">
+        <h2 className="text-lg font-semibold text-gray-900">Conversations</h2>
       </div>
 
       {/* Search */}
-      <div className="p-4">
-       <div className="relative">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    strokeWidth={2}
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
-    />
-  </svg>
+      <div className="px-4 pb-3">
+        <div className="relative">
+          <Search
+            size={18}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+          />
 
-  <input
-    type="text"
-    placeholder="Search conversations..."
-    className="w-full rounded-2xl border border-gray-200 bg-gray-50 pl-12 pr-4 py-3 outline-none transition-all duration-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-  />
-</div>
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            placeholder="Search conversations..."
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 py-2.5 text-sm outline-none transition-all duration-200 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+          />
+        </div>
+      </div>
+
+      {/* New Conversation */}
+      <div className="px-4">
+        <button
+          className="
+w-full
+rounded-xl
+bg-blue-600
+hover:bg-blue-700
+transition-all
+duration-200
+text-white
+py-2.5
+text-sm
+font-semibold
+flex
+items-center
+justify-center
+gap-2
+hover:shadow-md
+active:scale-[0.98]
+"
+        >
+          <Plus size={18} />
+          New Conversation
+        </button>
+      </div>
+
+      {/* Tabs */}
+      <div className="px-4 pt-3 pb-3">
+        <div className="flex rounded-xl bg-gray-100 p-1">
+          <button
+            onClick={() => setActiveTab("all")}
+            className={`flex-1 rounded-lg py-2 text-sm font-medium transition ${
+              activeTab === "all"
+                ? "bg-white shadow text-blue-600"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            All ({totalCount})
+          </button>
+
+          <button
+            onClick={() => setActiveTab("unread")}
+            className={`flex-1 rounded-lg py-2 text-sm font-medium transition ${
+              activeTab === "unread"
+                ? "bg-white shadow text-blue-600"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            Unread ({unreadCount})
+          </button>
+
+          <button
+            onClick={() => setActiveTab("favorites")}
+            className={`flex-1 rounded-lg py-2 text-sm font-medium transition flex items-center justify-center gap-1 ${
+              activeTab === "favorites"
+                ? "bg-white shadow text-blue-600"
+                : "text-gray-600 hover:text-gray-900"
+            }`}
+          >
+            <Star size={14} />({favoriteCount})
+          </button>
+        </div>
       </div>
 
       {/* Conversation List */}
       <div className="flex-1 overflow-y-auto px-2 py-2 space-y-2">
+        {" "}
+        {filteredConversations.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <Search size={26} className="text-gray-400" />
+            </div>
 
-        {conversations.map((chat) => (
+            <h3 className="text-gray-700 font-semibold">
+              No conversations found
+            </h3>
 
-<div
-  key={chat.id}
-  onClick={() => setActiveChat(chat.id)}
-  className={`
-    mx-2 rounded-2xl p-4 cursor-pointer
-    transition-all duration-200
-    ${
-      activeChat === chat.id
-        ? "bg-blue-50 ring-1 ring-blue-200 shadow-sm"
-        : "hover:bg-gray-50"
-    }
-  `}
->
-  <div className="flex items-center gap-3">
+            <p className="text-sm text-gray-500 mt-1">
+              Try searching with another keyword.
+            </p>
+          </div>
+        ) : (
+          filteredConversations.map((chat) => (
+            <div
+              key={chat.id}
+              onClick={() => setActiveChat(chat.id)}
+              className={`
+                mx-2
+                rounded-2xl
+                px-3.5 py-3
+                cursor-pointer
+                transition-all
+                duration-200
+                border-l-[3px]
+                ${
+                  activeChat === chat.id
+                    ? "bg-blue-50 border-blue-600"
+                    : "border-transparent hover:bg-gray-50"
+                }
+              `}
+            >
+              <div className="flex items-center gap-3">
+                {/* Avatar */}
 
-    {/* Avatar */}
-    <div className="relative flex-shrink-0">
-      <div className="w-12 h-12 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">
-        {chat.name.charAt(0)}
-      </div>
+                <div className="flex-shrink-0">
+                  <div
+                    className={`w-11 h-11 rounded-full ${
+                      avatarColors[chat.id % avatarColors.length]
+                    } text-white flex items-center justify-center font-semibold`}
+                  >
+                    {chat.name.charAt(0)}
+                  </div>
+                </div>
 
-      {chat.online && (
-        <div className="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white bg-green-500"></div>
-      )}
-    </div>
+                {/* Content */}
 
-    {/* Right Content */}
-    <div className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="font-semibold text-gray-900 truncate">
+                      {chat.name}
+                    </h3>
 
-      {/* Name + Time */}
-      <div className="flex items-start justify-between gap-3">
+                    <span className="text-xs text-gray-500 flex-shrink-0">
+                      {chat.time}
+                    </span>
+                  </div>
 
-        <h3 className="font-semibold text-gray-900 truncate">
-          {chat.name}
-        </h3>
+                  <div className="flex items-center justify-between gap-2 mt-1">
+                    <p className="text-sm text-gray-500 truncate">
+                      {chat.message}
+                    </p>
 
-        <span className="text-xs text-gray-500 flex-shrink-0">
-          {chat.time}
-        </span>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {chat.favorite && (
+                        <Star
+                          size={14}
+                          className="fill-yellow-400 text-yellow-400"
+                        />
+                      )}
 
-      </div>
-
-      {/* Message + Badge */}
-      <div className="mt-1 flex items-center justify-between gap-3">
-
-        <p className="text-sm text-gray-500 truncate">
-          {chat.message}
-        </p>
-
-        {chat.unread > 0 && (
-          <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs text-white">
-            {chat.unread}
-          </span>
+                      {chat.unread > 0 && (
+                        <span className="min-w-5 h-5 px-2 rounded-full bg-blue-600 text-white text-[11px] flex items-center justify-center">
+                          {chat.unread}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
         )}
-
       </div>
-
-    </div>
-
-  </div>
-</div>
-
-        ))}
-
-      </div>
-
     </div>
   );
 }
