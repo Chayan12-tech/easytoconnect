@@ -3,12 +3,25 @@ import MessageBubble from "./MessageBubble";
 import MessageInput from "./MessageInput";
 
 function ChatWindow({ conversation, messages }) {
+  // No conversation selected
+  if (!conversation) {
+    return (
+      <div className="flex-1 flex items-center justify-center bg-gray-50">
+        <p className="text-gray-500">Select a conversation</p>
+      </div>
+    );
+  }
+
+  // Messages for selected conversation
+  const conversationMessages = messages.filter(
+    (message) => message.conversationId === conversation.id
+  );
+
   return (
     <div className="flex-1 flex flex-col bg-gray-50">
       <ChatHeader conversation={conversation} />
 
       <div className="flex-1 overflow-y-auto px-5 py-5">
-        {/* Date Separator */}
         <div className="flex items-center justify-center my-6">
           <div className="flex-1 h-px bg-gray-200"></div>
 
@@ -19,17 +32,24 @@ function ChatWindow({ conversation, messages }) {
           <div className="flex-1 h-px bg-gray-200"></div>
         </div>
 
-        {/* Messages */}
-        <div className="space-y-2">
-          {messages.map((message) => (
-            <MessageBubble
-              key={message.id}
-              message={message.text}
-              time={message.time}
-              incoming={message.incoming}
-            />
-          ))}
-        </div>
+        {conversationMessages.length === 0 ? (
+          <div className="h-full flex items-center justify-center">
+            <p className="text-gray-500">
+              No messages yet. Start the conversation 👋
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {conversationMessages.map((message) => (
+              <MessageBubble
+                key={message.id}
+                message={message.text}
+                time={message.time}
+                incoming={message.incoming}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <MessageInput />
