@@ -18,8 +18,10 @@ function ConversationList({
   selectedConversation,
   onSelectConversation,
   onNewConversation,
+  searchQuery,
+  onSearchChange,
 }) {
-  const [search, setSearch] = useState("");
+  
   const [activeTab, setActiveTab] = useState("all");
 
   const totalCount = conversations.length;
@@ -43,17 +45,9 @@ function ConversationList({
       data = data.filter((chat) => chat.favorite);
     }
 
-    if (search.trim()) {
-      data = data.filter(
-        (chat) =>
-          chat.name.toLowerCase().includes(search.toLowerCase()) ||
-          chat.phone.toLowerCase().includes(search.toLowerCase()) ||
-          chat.message.toLowerCase().includes(search.toLowerCase())
-      );
-    }
 
     return data;
-  }, [conversations, activeTab, search]);
+  }, [conversations, activeTab]);
 
   return (
     <div className="w-[290px] bg-white border-r border-gray-200 flex flex-col">
@@ -75,12 +69,12 @@ function ConversationList({
           />
 
           <input
-            type="text"
-            placeholder="Search..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-          />
+  type="text"
+  placeholder="Search..."
+  value={searchQuery}
+  onChange={(e) => onSearchChange(e.target.value)}
+  className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+/>
 
         </div>
       </div>

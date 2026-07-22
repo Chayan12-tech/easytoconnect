@@ -24,6 +24,9 @@ function Dashboard() {
   // Modal
   const [isNewConversationOpen, setIsNewConversationOpen] = useState(false);
 
+  // Search
+const [searchQuery, setSearchQuery] = useState("");
+
   // Create new conversation
   const createConversation = (phoneNumber) => {
     const phone = `+1${phoneNumber}`;
@@ -93,6 +96,15 @@ function Dashboard() {
 });
   };
 
+  const filteredConversations = conversations.filter((conversation) => {
+  const query = searchQuery.toLowerCase();
+
+  return (
+    conversation.name.toLowerCase().includes(query) ||
+    conversation.phone.toLowerCase().includes(query)
+  );
+});
+
   return (
     <div className="flex h-screen flex-col bg-gray-100">
       <TopBar />
@@ -101,10 +113,12 @@ function Dashboard() {
         <Sidebar />
 
         <ConversationList
-          conversations={conversations}
+          conversations={filteredConversations}
           selectedConversation={selectedConversation}
           onSelectConversation={setSelectedConversation}
           onNewConversation={() => setIsNewConversationOpen(true)}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
         />
 
         <ChatWindow
