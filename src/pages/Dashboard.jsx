@@ -1,5 +1,4 @@
 import { useState } from "react";
-import initialMessages from "../data/messages";
 
 import Sidebar from "../components/Sidebar";
 import ConversationList from "../components/ConversationList";
@@ -8,9 +7,10 @@ import TopBar from "../components/TopBar";
 import NewConversationModal from "../components/modal/NewConversationModal";
 
 import { conversations as initialConversations } from "../data/conversations";
+import initialMessages from "../data/messages";
 
 function Dashboard() {
-  // All conversations
+  // Conversations
   const [conversations, setConversations] = useState(initialConversations);
 
   // Selected conversation
@@ -18,16 +18,16 @@ function Dashboard() {
     initialConversations[0] ?? null
   );
 
+  // Messages
   const [messages, setMessages] = useState(initialMessages);
 
-  // New Conversation Modal
+  // Modal
   const [isNewConversationOpen, setIsNewConversationOpen] = useState(false);
 
   // Create new conversation
   const createConversation = (phoneNumber) => {
     const phone = `+1${phoneNumber}`;
 
-    // Check if conversation already exists
     const existingConversation = conversations.find(
       (chat) => chat.phone === phone
     );
@@ -53,6 +53,24 @@ function Dashboard() {
     setIsNewConversationOpen(false);
   };
 
+  // Send Message
+  const sendMessage = (text) => {
+    if (!selectedConversation) return;
+
+    const newMessage = {
+      id: Date.now(),
+      conversationId: selectedConversation.id,
+      text,
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+      incoming: false,
+    };
+
+    setMessages((prev) => [...prev, newMessage]);
+  };
+
   return (
     <div className="flex h-screen flex-col bg-gray-100">
       <TopBar />
@@ -70,6 +88,7 @@ function Dashboard() {
         <ChatWindow
           conversation={selectedConversation}
           messages={messages}
+          onSend={sendMessage}
         />
       </div>
 

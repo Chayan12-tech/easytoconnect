@@ -2,7 +2,7 @@ import ChatHeader from "./ChatHeader";
 import MessageBubble from "./MessageBubble";
 import MessageInput from "./MessageInput";
 
-function ChatWindow({ conversation, messages }) {
+function ChatWindow({ conversation, messages, onSend }) {
   // No conversation selected
   if (!conversation) {
     return (
@@ -22,6 +22,7 @@ function ChatWindow({ conversation, messages }) {
       <ChatHeader conversation={conversation} />
 
       <div className="flex-1 overflow-y-auto px-5 py-5">
+        {/* Date Separator */}
         <div className="flex items-center justify-center my-6">
           <div className="flex-1 h-px bg-gray-200"></div>
 
@@ -52,7 +53,7 @@ function ChatWindow({ conversation, messages }) {
         )}
       </div>
 
-      <MessageInput />
+      <MessageInput onSend={onSend} />
     </div>
   );
 }
