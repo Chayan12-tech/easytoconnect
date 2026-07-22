@@ -2,6 +2,7 @@ export const conversations = [
   {
     id: 1,
     name: "John Smith",
+    phone: "+14155551095",
     message: "Hey, are you available?",
     time: "2m",
     unread: 2,
@@ -10,6 +11,7 @@ export const conversations = [
   {
     id: 2,
     name: "Sarah Johnson",
+    phone: "+14155551385",
     message: "Thanks! I'll call you later.",
     time: "10m",
     unread: 0,
@@ -18,6 +20,7 @@ export const conversations = [
   {
     id: 3,
     name: "Michael Brown",
+    phone: "+14155551276",
     message: "Can we schedule a meeting?",
     time: "Yesterday",
     unread: 1,
@@ -26,6 +29,7 @@ export const conversations = [
   {
     id: 4,
     name: "Alex Carter",
+    phone: "+14155551085",
     message: "Let's meet tomorrow morning.",
     time: "1h",
     unread: 0,
@@ -34,6 +38,7 @@ export const conversations = [
   {
     id: 5,
     name: "Emma Wilson",
+    phone: "+14155551864",
     message: "Please send the latest report.",
     time: "2h",
     unread: 3,
@@ -42,6 +47,7 @@ export const conversations = [
   {
     id: 6,
     name: "David Miller",
+    phone: "+14155551368",
     message: "Thank you so much!",
     time: "3h",
     unread: 0,
@@ -50,6 +56,7 @@ export const conversations = [
   {
     id: 7,
     name: "Sophia Taylor",
+    phone: "+14155551385",
     message: "Where are you now?",
     time: "4h",
     unread: 5,
@@ -58,6 +65,7 @@ export const conversations = [
   {
     id: 8,
     name: "James Anderson",
+    phone: "+14155551368",
     message: "I'll call you in a few minutes.",
     time: "5h",
     unread: 0,
@@ -66,6 +74,7 @@ export const conversations = [
   {
     id: 9,
     name: "Olivia Thomas",
+    phone: "+14155551853",
     message: "Project has been completed.",
     time: "6h",
     unread: 1,
@@ -74,6 +83,7 @@ export const conversations = [
   {
     id: 10,
     name: "Daniel White",
+    phone: "+14155551267",
     message: "Can you review my document?",
     time: "7h",
     unread: 0,
@@ -82,6 +92,7 @@ export const conversations = [
   {
     id: 11,
     name: "Emily Harris",
+    phone: "+14155551853",
     message: "Meeting starts at 5 PM.",
     time: "Yesterday",
     unread: 2,
@@ -90,6 +101,7 @@ export const conversations = [
   {
     id: 12,
     name: "William Scott",
+    phone: "+14155551954",
     message: "Everything looks great.",
     time: "Yesterday",
     unread: 0,
@@ -98,6 +110,7 @@ export const conversations = [
   {
     id: 13,
     name: "Charlotte King",
+    phone: "+14155551843",
     message: "Let's finalize the design.",
     time: "Mon",
     unread: 1,
@@ -106,6 +119,7 @@ export const conversations = [
   {
     id: 14,
     name: "Benjamin Lee",
+    phone: "+14155551354",
     message: "Your payment has been received.",
     time: "Mon",
     unread: 0,
@@ -114,6 +128,7 @@ export const conversations = [
   {
     id: 15,
     name: "Amelia Young",
+    phone: "+14155551876",
     message: "Can we reschedule the meeting?",
     time: "Sun",
     unread: 4,
@@ -122,6 +137,7 @@ export const conversations = [
   {
     id: 16,
     name: "Lucas Walker",
+    phone: "+14155551765",
     message: "Good morning!",
     time: "Sun",
     unread: 0,
@@ -130,6 +146,7 @@ export const conversations = [
   {
     id: 17,
     name: "Henry Hall",
+    phone: "+14155551453",
     message: "I'll share the files shortly.",
     time: "Sat",
     unread: 2,
@@ -138,6 +155,7 @@ export const conversations = [
   {
     id: 18,
     name: "Grace Allen",
+    phone: "+14155551245",
     message: "Thank you for your support.",
     time: "Fri",
     unread: 0,
