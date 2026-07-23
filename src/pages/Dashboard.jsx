@@ -88,19 +88,25 @@ const toggleFavorite = (conversationId) => {
 
 
   // Send Message
-  const sendMessage = (text) => {
+  const sendMessage = (data) => {
     if (!selectedConversation) return;
+
+    const { text, image, previewUrl } = data;
 
     const newMessage = {
       id: Date.now(),
       conversationId: selectedConversation.id,
       text,
+      image,
+      previewUrl,
       time: new Date().toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
       }),
       incoming: false,
     };
+
+    
 
     setMessages((prev) => [...prev, newMessage]);
 
@@ -109,7 +115,7 @@ const toggleFavorite = (conversationId) => {
     conversation.id === selectedConversation.id
       ? {
           ...conversation,
-          message: text,
+          message: text || (image ? "📷 Photo" : ""),
           time: newMessage.time,
         }
       : conversation

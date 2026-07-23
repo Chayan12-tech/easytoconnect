@@ -72,6 +72,7 @@ function ChatWindow({
               <MessageBubble
                 key={message.id}
                 message={message.text}
+                image={message.previewUrl}
                 time={message.time}
                 incoming={message.incoming}
               />

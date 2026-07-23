@@ -5,6 +5,8 @@ import EmojiPicker from "emoji-picker-react";
 function MessageInput({ onSend }) {
   const [text, setText] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState("");
 
   const textareaRef = useRef(null);
   const imageInputRef = useRef(null);
@@ -20,19 +22,68 @@ function MessageInput({ onSend }) {
     textarea.style.height = `${textarea.scrollHeight}px`;
   };
 
-  const sendMessage = () => {
-    const message = text.trim();
 
-    if (!message) return;
+  const handleImageSelect = (event) => {
+  const file = event.target.files?.[0];
 
-    onSend?.(message);
+  if (!file) return;
 
-    setText("");
+  console.log(file);
 
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-    }
+  setSelectedImage(file);
+};
+
+
+const removeSelectedImage = () => {
+  setSelectedImage(null);
+  setPreviewUrl("");
+
+  if (imageInputRef.current) {
+    imageInputRef.current.value = "";
+  }
+};
+
+
+useEffect(() => {
+  if (!selectedImage) {
+    setPreviewUrl("");
+    return;
+  }
+
+  const objectUrl = URL.createObjectURL(selectedImage);
+
+  setPreviewUrl(objectUrl);
+
+  return () => {
+    URL.revokeObjectURL(objectUrl);
   };
+}, [selectedImage]);
+
+
+ const sendMessage = () => {
+  const message = text.trim();
+
+  if (!message && !selectedImage) return;
+
+  onSend?.({
+    text: message,
+    image: selectedImage,
+    previewUrl,
+  });
+
+  setText("");
+  setSelectedImage(null);
+  setPreviewUrl("");
+
+  if (imageInputRef.current) {
+    imageInputRef.current.value = "";
+  }
+
+  if (textareaRef.current) {
+    textareaRef.current.style.height = "auto";
+  }
+};
+
 
 
   const handleEmojiClick = (emojiData) => {
@@ -74,6 +125,25 @@ useEffect(() => {
   return (
     <div className="relative bg-white border-t border-gray-200 p-4">
 
+{selectedImage && (
+  <div className="relative mb-3 w-fit">
+    <img
+      src={previewUrl}
+      alt="Preview"
+      className="max-h-48 max-w-[180px] rounded-2xl border border-gray-200 object-cover shadow-md"
+    />
+
+    <button
+      onClick={removeSelectedImage}
+      className="absolute -top-2 -right-2 flex h-7 w-7 items-center justify-center rounded-full bg-gray-900 text-white shadow hover:bg-black transition"
+      title="Remove image"
+    >
+      ✕
+    </button>
+  </div>
+)}
+
+
       <div className="flex items-end gap-3">
 
         {/* Emoji */}
@@ -96,13 +166,15 @@ useEffect(() => {
 
 </div>
 
-        {/* Hidden Image Input */}
+
         <input
-          ref={imageInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-        />
+  ref={imageInputRef}
+  type="file"
+  accept="image/*"
+  onChange={handleImageSelect}
+  className="hidden"
+/>
+
 
         {/* Image Button */}
         <button
@@ -112,8 +184,9 @@ useEffect(() => {
           <ImagePlus size={20} className="text-gray-600" />
         </button>
 
+
         {/* Textarea */}
-        <div className="flex-1 border border-gray-300 rounded-3xl px-4 py-3 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition">
+        <div className="flex-1 border border-gray-300 rounded-3xl px-4 py-2 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition">
           <textarea
             ref={textareaRef}
             rows={1}
