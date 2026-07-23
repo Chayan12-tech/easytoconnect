@@ -3,7 +3,14 @@ import ChatHeader from "./ChatHeader";
 import MessageBubble from "./MessageBubble";
 import MessageInput from "./MessageInput";
 
-function ChatWindow({ conversation, messages, onSend }) {
+function ChatWindow({
+  conversation,
+  messages,
+  onSend,
+  onToggleFavorite,
+  showContactPanel,
+  setShowContactPanel,
+}) {
   // No conversation selected
   if (!conversation) {
     return (
@@ -31,7 +38,12 @@ function ChatWindow({ conversation, messages, onSend }) {
 
   return (
     <div className="flex-1 flex flex-col bg-gray-50">
-      <ChatHeader conversation={conversation} />
+      <ChatHeader
+  conversation={conversation}
+  onToggleFavorite={onToggleFavorite}
+  showContactPanel={showContactPanel}
+  setShowContactPanel={setShowContactPanel}
+/>
 
       <div
         ref={messagesContainerRef}

@@ -19,7 +19,7 @@ const menuItems = [
 
 function Sidebar() {
   return (
-    <div className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col">
+    <div className="w-56 h-screen bg-white border-r border-gray-200 flex flex-col">
         
 <div className="py-5 border-b px-6">
   <p className="text-sm font-semibold text-gray-500 uppercase tracking-wide">

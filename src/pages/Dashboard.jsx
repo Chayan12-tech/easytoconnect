@@ -8,6 +8,7 @@ import NewConversationModal from "../components/modal/NewConversationModal";
 
 import { conversations as initialConversations } from "../data/conversations";
 import initialMessages from "../data/messages";
+import ContactPanel from "../components/ContactPanel";
 
 function Dashboard() {
   // Conversations
@@ -26,6 +27,9 @@ function Dashboard() {
 
   // Search
 const [searchQuery, setSearchQuery] = useState("");
+
+// Contact Panel
+const [showContactPanel, setShowContactPanel] = useState(false);
 
   // Create new conversation
   const createConversation = (phoneNumber) => {
@@ -55,6 +59,33 @@ const [searchQuery, setSearchQuery] = useState("");
     setSelectedConversation(newConversation);
     setIsNewConversationOpen(false);
   };
+
+
+// Toggle Favorite
+const toggleFavorite = (conversationId) => {
+  setConversations((prev) => {
+    const updatedConversations = prev.map((conversation) =>
+      conversation.id === conversationId
+        ? {
+            ...conversation,
+            favorite: !conversation.favorite,
+          }
+        : conversation
+    );
+
+    // Keep selectedConversation in sync
+    const updatedSelected = updatedConversations.find(
+      (conversation) => conversation.id === conversationId
+    );
+
+    if (updatedSelected) {
+      setSelectedConversation(updatedSelected);
+    }
+
+    return updatedConversations;
+  });
+};
+
 
   // Send Message
   const sendMessage = (text) => {
@@ -119,13 +150,24 @@ const [searchQuery, setSearchQuery] = useState("");
           onNewConversation={() => setIsNewConversationOpen(true)}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          onToggleFavorite={toggleFavorite}
         />
 
         <ChatWindow
           conversation={selectedConversation}
           messages={messages}
           onSend={sendMessage}
+          onToggleFavorite={toggleFavorite}
+          showContactPanel={showContactPanel}
+          setShowContactPanel={setShowContactPanel}
         />
+
+        {showContactPanel && (
+  <ContactPanel
+  conversation={selectedConversation}
+  onClose={() => setShowContactPanel(false)}
+/>
+)}
       </div>
 
       <NewConversationModal

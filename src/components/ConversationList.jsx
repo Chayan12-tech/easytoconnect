@@ -50,7 +50,7 @@ function ConversationList({
   }, [conversations, activeTab]);
 
   return (
-    <div className="w-[290px] bg-white border-r border-gray-200 flex flex-col">
+    <div className="w-[340px] bg-white border-r border-gray-200 flex flex-col">
 
       {/* Header */}
       <div className="px-5 pt-5 pb-3">

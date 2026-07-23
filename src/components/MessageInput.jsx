@@ -1,11 +1,14 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Smile, ImagePlus, SendHorizontal } from "lucide-react";
+import EmojiPicker from "emoji-picker-react";
 
 function MessageInput({ onSend }) {
   const [text, setText] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const textareaRef = useRef(null);
   const imageInputRef = useRef(null);
+  const emojiPickerRef = useRef(null);
 
   const handleInput = (e) => {
     setText(e.target.value);
@@ -31,6 +34,14 @@ function MessageInput({ onSend }) {
     }
   };
 
+
+  const handleEmojiClick = (emojiData) => {
+  setText((prev) => prev + emojiData.emoji);
+
+  textareaRef.current?.focus();
+};
+
+
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -38,16 +49,52 @@ function MessageInput({ onSend }) {
     }
   };
 
+
+useEffect(() => {
+  if (!showEmojiPicker) return;
+
+  const handleClickOutside = (event) => {
+    if (
+      emojiPickerRef.current &&
+      !emojiPickerRef.current.contains(event.target)
+    ) {
+      setShowEmojiPicker(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [showEmojiPicker]);
+
+
+
   return (
-    <div className="bg-white border-t border-gray-200 p-4">
+    <div className="relative bg-white border-t border-gray-200 p-4">
+
       <div className="flex items-end gap-3">
 
         {/* Emoji */}
-        <button
-          className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition"
-        >
-          <Smile size={20} className="text-gray-600" />
-        </button>
+<div ref={emojiPickerRef} className="relative">
+
+  {showEmojiPicker && (
+    <div className="absolute bottom-14 left-0 z-50">
+      <EmojiPicker
+        onEmojiClick={handleEmojiClick}
+      />
+    </div>
+  )}
+
+  <button
+    onClick={() => setShowEmojiPicker((prev) => !prev)}
+    className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition"
+  >
+    <Smile size={20} className="text-gray-600" />
+  </button>
+
+</div>
 
         {/* Hidden Image Input */}
         <input
