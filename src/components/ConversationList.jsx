@@ -13,6 +13,21 @@ const avatarColors = [
   "bg-teal-600",
 ];
 
+const formatPhoneNumber = (phone) => {
+  if (!phone) return "";
+
+  const digits = phone.replace(/\D/g, "");
+
+  const usNumber =
+    digits.length === 11 && digits.startsWith("1")
+      ? digits.slice(1)
+      : digits;
+
+  if (usNumber.length !== 10) return phone;
+
+  return `(${usNumber.slice(0, 3)}) ${usNumber.slice(3, 6)}-${usNumber.slice(6)}`;
+};
+
 function ConversationList({
   conversations,
   selectedConversation,
@@ -161,7 +176,7 @@ function ConversationList({
                   avatarColors[chat.id % avatarColors.length]
                 }`}
               >
-                {chat.name.charAt(0)}
+                {chat.name ? chat.name.charAt(0).toUpperCase() : "?"}
               </div>
 
               <div className="flex-1 min-w-0">
@@ -169,7 +184,7 @@ function ConversationList({
                 <div className="flex justify-between">
 
                   <h3 className="truncate font-semibold text-gray-900">
-                    {chat.name}
+                    {chat.name || formatPhoneNumber(chat.phone)}
                   </h3>
 
                   <span className="text-xs text-gray-500">

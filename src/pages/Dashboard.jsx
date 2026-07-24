@@ -31,6 +31,30 @@ const [searchQuery, setSearchQuery] = useState("");
 // Contact Panel
 const [showContactPanel, setShowContactPanel] = useState(false);
 
+
+// Update contact name
+const updateConversation = (conversationId, updates) => {
+  setConversations((prev) =>
+    prev.map((conversation) =>
+      conversation.id === conversationId
+        ? {
+            ...conversation,
+            ...updates,
+          }
+        : conversation
+    )
+  );
+
+  setSelectedConversation((prev) =>
+    prev && prev.id === conversationId
+      ? {
+          ...prev,
+          ...updates,
+        }
+      : prev
+  );
+};
+
   // Create new conversation
   const createConversation = (phoneNumber) => {
     const phone = `+1${phoneNumber}`;
@@ -47,12 +71,15 @@ const [showContactPanel, setShowContactPanel] = useState(false);
 
     const newConversation = {
       id: Date.now(),
-      name: phone,
+      name: "",
       phone,
       message: "",
       time: "Now",
       unread: 0,
       favorite: false,
+
+      location: "",
+      notes: "",
     };
 
     setConversations((prev) => [newConversation, ...prev]);
@@ -169,10 +196,12 @@ const toggleFavorite = (conversationId) => {
         />
 
         {showContactPanel && (
-  <ContactPanel
+<ContactPanel
   conversation={selectedConversation}
   onClose={() => setShowContactPanel(false)}
+  onUpdate={updateConversation}
 />
+
 )}
       </div>
 

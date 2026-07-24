@@ -15,8 +15,10 @@ function ChatHeader({
     );
   }
 
-  const displayName = conversation.name || conversation.phone;
-  const avatarLetter = displayName.charAt(0).toUpperCase();
+  const displayName = conversation.name || "Unknown";
+  const avatarLetter = conversation.name
+  ? conversation.name.charAt(0).toUpperCase()
+  : "?";
   const copyPhoneNumber = async () => {
   try {
     await navigator.clipboard.writeText(conversation.phone);

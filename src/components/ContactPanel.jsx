@@ -1,11 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function ContactPanel({
   conversation,
   onClose,
+  onUpdate,
 }) {
 
     const [copied, setCopied] = useState(false);
+
+    const [isEditingLocation, setIsEditingLocation] = useState(false);
+    const [isEditingNotes, setIsEditingNotes] = useState(false);
+    const [isEditingName, setIsEditingName] = useState(false);
+
+    const [name, setName] = useState("");
+    const [location, setLocation] = useState("");
+    const [notes, setNotes] = useState("");
+
+
+useEffect(() => {
+  setName(conversation?.name || "");
+  setLocation(conversation?.location || "");
+  setNotes(conversation?.notes || "");
+
+  // Reset edit modes when switching conversations
+  setIsEditingName(false);
+  setIsEditingLocation(false);
+  setIsEditingNotes(false);
+}, [conversation]);
+
+
 
       const formatPhoneNumber = (phone) => {
     if (!phone) return "";
@@ -59,12 +82,57 @@ function ContactPanel({
 
      <div className="px-6 py-8 flex flex-col items-center">
   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl font-bold text-blue-600">
-    {conversation?.name?.charAt(0)?.toUpperCase()}
+    {conversation?.name
+  ? conversation.name.charAt(0).toUpperCase()
+  : "?"}
   </div>
 
-  <h3 className="mt-3 text-lg font-semibold text-gray-900">
-    {conversation?.name}
-  </h3>
+<div className="mt-3 flex w-full items-center justify-center gap-2">
+  {isEditingName ? (
+    <>
+      <input
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="Enter contact name"
+        className="w-40 rounded-md border border-gray-300 px-2 py-1 text-center text-lg font-semibold outline-none focus:border-blue-500"
+      />
+
+      <button
+        onClick={() => {
+  const newName = name.trim();
+
+  onUpdate(conversation.id, {
+  name: newName,
+});
+
+  setIsEditingName(false);
+}}
+        className="flex h-7 w-7 items-center justify-center rounded-md text-green-600 transition hover:bg-green-50"
+        title="Save"
+      >
+        ✔️
+      </button>
+    </>
+  ) : (
+    <>
+      <h3 className="text-lg font-semibold text-gray-900">
+        {conversation?.name || "Unknown"}
+      </h3>
+
+      <button
+        onClick={() => {
+          setName(conversation?.name || "");
+          setIsEditingName(true);
+        }}
+        className="flex h-7 w-7 items-center justify-center rounded-md text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+        title="Edit contact name"
+      >
+        ✏️
+      </button>
+    </>
+  )}
+</div>
 
   <div className="mt-1 flex items-center justify-center gap-2">
   <p className="text-sm text-gray-500">
@@ -143,21 +211,51 @@ function ContactPanel({
           Location
         </p>
 
-        <p className="mt-1 text-sm text-gray-900">
-          New Town, Kolkata
-        </p>
+        
+{isEditingLocation ? (
+  <input
+    type="text"
+    value={location}
+    onChange={(e) => setLocation(e.target.value)}
+    placeholder="Enter location"
+    className="mt-2 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm outline-none focus:border-blue-500"
+    autoFocus
+  />
+) : (
+  <p
+    className={`mt-1 text-sm ${
+      location ? "text-gray-900" : "text-gray-500 italic"
+    }`}
+  >
+    {location || "No location added"}
+  </p>
+)}
+
+
       </div>
 
-      <button
-        className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
-        title="Edit location"
-      >
-        ✏️
-      </button>
+<button
+  onClick={() => {
+    if (isEditingLocation) {
+      const newLocation = location.trim();
+
+      onUpdate(conversation.id, {
+        location: newLocation,
+      });
+    }
+
+    setIsEditingLocation(!isEditingLocation);
+  }}
+  className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+  title={isEditingLocation ? "Done" : "Edit location"}
+>
+  {isEditingLocation ? "✔️" : "✏️"}
+</button>
+
+
     </div>
   </div>
 </div>
-
 
 
 {/* ------------------- Notes Card Start ----------------------- */}
@@ -170,17 +268,44 @@ function ContactPanel({
           Notes
         </p>
 
-        <p className="mt-2 text-sm text-gray-500">
-          No notes yet.
-        </p>
+        {isEditingNotes ? (
+  <textarea
+    value={notes}
+    onChange={(e) => setNotes(e.target.value)}
+    placeholder="Enter notes"
+    rows={3}
+    className="mt-2 w-full rounded-md border border-gray-300 bg-white px-2 py-1 text-sm outline-none focus:border-blue-500 resize-none"
+    autoFocus
+  />
+) : (
+  <p
+    className={`mt-2 text-sm ${
+      notes ? "text-gray-900" : "text-gray-500 italic"
+    }`}
+  >
+    {notes || "No notes yet."}
+  </p>
+)}
       </div>
 
-      <button
-        className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
-        title="Add note"
-      >
-        ✏️
-      </button>
+<button
+  onClick={() => {
+    if (isEditingNotes) {
+      const newNotes = notes.trim();
+
+      onUpdate(conversation.id, {
+        notes: newNotes,
+      });
+    }
+
+    setIsEditingNotes(!isEditingNotes);
+  }}
+  className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+  title={isEditingNotes ? "Done" : "Edit notes"}
+>
+  {isEditingNotes ? "✔️" : "✏️"}
+</button>
+
     </div>
   </div>
 </div>
